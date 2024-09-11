@@ -1,47 +1,53 @@
-#ifndef SOUNDEX_H
-#define SOUNDEX_H
-
+#include <gtest/gtest.h>
 #include "Soundex.h"
-#include <ctype.h>
-#include <string.h>
 
-char getSoundexCode(char c) {
-    static const char soundexTable[26] = {'0', '1', '2', '3', '0', '1', '2', '0', '0', '2', '2', '4', '5','5', '0', '1', '2', '6', '2', '3', '0', '1', '0', '2', '0', '2'
-    };
-    c = toupper(c);
-    if (!isalpha(c))
-    {      
-         return '0';
-    }
-     return soundexTable[c - 'A'];
+//Append 3 zeros if result contains less than 3 digits
+TEST(SoudexTestsuite, ReplacesConsonantsWithAppropriateDigits_1) {
+//AAA
+  char soundex[5];
+  generateSoundex("AX", soundex);
+  ASSERT_STREQ(soundex,"A200");
 }
 
-void initializeSoundex(char *soundex, char firstCharacter) {
-    soundex[0] = toupper(firstCharacter);
-    soundex[1] = soundex[2] = soundex[3] = '0';
-    soundex[4] = '\0';
+TEST(SoudexTestsuite, ReplacesConsonantsWithAppropriateDigits_2) {
+//AAA
+  char soundex[5];
+  generateSoundex("A1CDFe", soundex);
+  ASSERT_STREQ(soundex,"A231");
 }
 
-int shouldAddToSoundex(char code, char *soundex, int sIndex) {
-   
+//Test case to ckeck special character
+TEST(SoudexTestsuite, ReplacesConsonantsWithAppropriateDigits_3) {
+//AAA
+  char soundex[5];
+  generateSoundex("A[", soundex);
+  ASSERT_STREQ(soundex,"A000");
+}
+TEST(SoudexTestsuite, ReplacesConsonantsWithAppropriateDigits_4) {
+ //AAA
+  char soundex[5];
+  generateSoundex("ACGJ", soundex);
+ ASSERT_STREQ(soundex,"A200");
 }
 
-void processCharacter(const char *name, char *soundex, int *sIndex, int i) {
-    char code = getSoundexCode(name[i]);
-    if (shouldAddToSoundex(code, soundex, *sIndex)) {
-        soundex[*sIndex] = code;
-        (*sIndex)++;
-    }
+TEST(SoudexTestsuite, ReplacesConsonantsWithAppropriateDigits_5) {
+ //AAA
+  char soundex[5];
+  generateSoundex("@@BBCCDD", soundex);
+ ASSERT_STREQ(soundex,"@123");
+}
+//Replace all adjacent same digits with one digit
+TEST(SoudexTestsuite, ReplacesConsonantsWithAppropriateDigits_6) {
+//AAA
+  char soundex[5];
+  generateSoundex("Abfp", soundex);
+  ASSERT_STREQ(soundex,"A100");
 }
 
-
-void generateSoundex(const char *name, char *soundex) {
-    initializeSoundex(soundex, name[0]);
-    int sIndex = 1;
-    int len = strlen(name);
-    for (int i = 1; i < len; i++) {
-        processCharacter(name, soundex, &sIndex, i);
-    }
+//two letters with the same number separated by 'h', 'w' or 'y' are coded as a single number
+TEST(SoudexTestsuite, ReplacesConsonantsWithAppropriateDigits_7) {
+//AAA
+  char soundex[5];
+  generateSoundex("BShZ", soundex);
+  ASSERT_STREQ(soundex,"B200");
 }
-
-#endif // SOUNDEX_H
