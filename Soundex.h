@@ -22,13 +22,13 @@ void initializeSoundex(char *soundex, char firstCharacter) {
     soundex[4] = '\0';
 }
 
-int shouldAddToSoundex(char code, char *soundex, int sIndex) {
+int Soundex_sIndex(char code, char *soundex, int sIndex) {
     return sIndex < 4 && code != '0' && code != soundex[sIndex - 1];
 }
 
 void processCharacter(const char *name, char *soundex, int *sIndex, int i) {
     char code = getSoundexCode(name[i]);
-    if (shouldAddToSoundex(code, soundex, *sIndex)) {
+    if (Soundex_sIndex(code, soundex, *sIndex)) {
         soundex[*sIndex] = code;
         (*sIndex)++;
     }
